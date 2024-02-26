@@ -8,8 +8,24 @@ dotenv.config();
 app.use(express.json());
 mongoose.connect(process.env.MONGO)
 .then(()=> console.log('mongoDB is connected'));
-app.use('/api/auth',authRoutes);
-app.use('/api/user' , userRoutes);
+
 app.listen(3000,()=>{
   console.log('server is listen in port 3000 //');  
+})
+
+app.use('/api/auth',authRoutes);
+app.use('/api/user' , userRoutes);
+
+app.use((err,req,res,next)=>{
+
+  const statusCode =err.statusCode || 500;
+  
+  const message = err.message || 'internal server error';
+  
+  res.status(statusCode).json({
+    success:false,
+    statusCode,
+    message
+  })
+  
 })
