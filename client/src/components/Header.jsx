@@ -11,6 +11,7 @@ export default function Header() {
              from-indigo-500 via-purple-500 to-pink-500 rounded-lg text-white'>Sahand's</span>
             Blog
         </Link>
+        
         <form >
             <TextInput type='text' placeholder='Search' rightIcon={AiOutlineSearch} className=' hidden lg:inline' />
         </form>
