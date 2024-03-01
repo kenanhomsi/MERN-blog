@@ -18,10 +18,8 @@ export default function Dashboard() {
         {/* side bar */}
         <DashSidebar />
       </div>
-      <div className="">
-        {/* main side */}
+      
         {Tab === 'profile'&& <DashProfile />}
-      </div>
     </div>
   )
 }
