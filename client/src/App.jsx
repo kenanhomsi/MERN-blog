@@ -7,6 +7,7 @@ import Dashboard from './pages/Dashboard'
 import Projects from './pages/Projects'
 import Header from './components/Header'
 import Footer from './components/Footer'
+import PriveteRouter from './components/PriveteRouter'
 export default function App() {
   return (
     <BrowserRouter>
@@ -16,7 +17,9 @@ export default function App() {
           <Route path='/About'  element={<About />}/>
           <Route path='/sign-up'  element={<SignUp />}/>
           <Route path='/sign-in'  element={<SignIn />}/>
-          <Route path='/dashboard'  element={<Dashboard />}/>
+          <Route element={<PriveteRouter />}>
+              <Route path='/dashboard'  element={<Dashboard />}/>
+          </Route>
           <Route path='/projects'  element={<Projects />}/>
         </Routes>
         <Footer />
