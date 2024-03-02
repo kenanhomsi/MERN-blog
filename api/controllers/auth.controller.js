@@ -44,7 +44,7 @@ export const signin = async (req,res,next)=>{
     }
     const token= jwt.sign({id:ValidUser._id} ,process.env.JWT_SECRET);
     const {password:pass , ...rest}=ValidUser._doc;
-    res.status(200).cookie('access-token',token,{httpOnly:true}).json(rest);
+    res.status(200).cookie('access_token',token,{httpOnly:true}).json(rest);
   }catch(err){
     next(err);
   }
