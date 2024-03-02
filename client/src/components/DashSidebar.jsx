@@ -1,7 +1,7 @@
 import { Sidebar, SidebarItem, SidebarItemGroup, SidebarItems } from 'flowbite-react';
 import { HiUser ,HiArrowSmRight } from 'react-icons/hi'
 import {Link, useLocation} from 'react-router-dom'
-import {useEffect, useState} from 'react'
+import {useEffect, useState } from 'react'
 export default function DashSidebar() {
     const location=useLocation();
     const [Tab,setTab]=useState();
@@ -17,7 +17,7 @@ export default function DashSidebar() {
         <SidebarItems>
             <SidebarItemGroup>
                 <Link to='/dashboard?tab=profile' >
-                        <SidebarItem active={Tab==='profile'} icon={HiUser} label={'User'} labelColor='dark' >
+                        <SidebarItem as='div' active={Tab==='profile'} icon={HiUser} label={'User'} labelColor='dark' >
                             Profile
                         </SidebarItem>
                 </Link>
