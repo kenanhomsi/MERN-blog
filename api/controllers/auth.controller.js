@@ -52,7 +52,6 @@ export const signin = async (req,res,next)=>{
 
 export const google= async (req,res,next)=>{
   const {name ,email, googlePhotoUrl}=req.body;
-  console.log(name,email);
   try{
     const user= await User.findOne({email});
 
