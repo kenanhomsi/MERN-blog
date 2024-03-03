@@ -5,13 +5,20 @@ import {getStorage, ref, uploadBytesResumable,getDownloadURL} from 'firebase/sto
 import {app} from '../firebase'
 import { CircularProgressbar } from 'react-circular-progressbar';
 import 'react-circular-progressbar/dist/styles.css';
+import { updateStart,updateSuccess,updateFailure } from '../../redux/user/userSlice';
+import {useDispatch}from 'react-redux'
 export default function DashProfile() {
+    const [FormData,setFormData]=useState({});
     const {currentUser}=useSelector(state => state.user);
+    const {error:uploadError}=useSelector(state => state.user);
     const [imageFile,setIamgeFile]=useState(null);
     const [imageFileUrl,setIamgeFileUrl]=useState(null);
     const [IamgeFileUploadProgress,setIamgeFileUploadProgress]=useState(null);
     const [IamgeFileUploadError,setIamgeFileUploadError]=useState(null);
+    const [IamgeFileUploading,setIamgeFileUploading]=useState(false);
+    const [updataUserSuccess,setupdataUserSuccess]=useState(null);
     const filePickerRef=useRef();
+    const dispatch=useDispatch();
     const handleIamgeChange=(e)=>{
         const file=e.target.files[0];
         if(file){
@@ -36,6 +43,7 @@ export default function DashProfile() {
         //       }
         //     }
         //   }
+        setIamgeFileUploading(true);
         setIamgeFileUploadError(null);
         const storage=getStorage(app);
         const fileName=new Date().getTime()+ imageFile.name;
@@ -53,20 +61,55 @@ export default function DashProfile() {
                 setIamgeFileUploadProgress(null);
                 setIamgeFile(null);
                 setIamgeFileUrl(null);
+                setIamgeFileUploading(false);
             },
             ()=>{
                 getDownloadURL(uploadTask.snapshot.ref).then((downloadUrl)=>{
                     setIamgeFileUrl(downloadUrl);
-                setIamgeFileUploadProgress(null);
-
+                    setFormData({...FormData,profilePicture:downloadUrl});
+                    setIamgeFileUploadProgress(null);
+                    setIamgeFileUploading(false);
                 })
             }
         )
         }
-  return (
+
+        const handleCHange=(e)=>{
+            setFormData({...FormData,[e.target.id] : e.target.value});
+        }
+        const handleSubmit= async (e)=>{
+            e.preventDefault();
+            setIamgeFileUploading(null);
+            if(Object.keys(FormData).length === 0){
+                dispatch(updateFailure('there is no data to updata'));
+                return;
+            }
+            if(IamgeFileUploading){
+                dispatch(updateFailure('wait for the image to be completed'));
+                return;
+            }
+            try{
+                dispatch(updateStart());
+            
+                const res= await fetch(`/api/user/update/${currentUser._id}`,{
+                    method:'PUT',
+                    headers:{'Content-Type':'application/json'},
+                    body:JSON.stringify(FormData)})
+                    const data=await res.json();
+                    if(!res.ok){
+                        dispatch(updateFailure(data.message));
+                    }else{
+                        dispatch(updateSuccess(data))
+                        setupdataUserSuccess("User's profile update successfly")
+                    }
+            }catch(err){
+                dispatch(updateFailure(err.message));
+            }
+        }
+    return (
     <div  className='max-w-lg mx-auto p-3 w-full'>
         <h1 className='my-7 text-center font-semibold text-3xl'>Profile</h1>
-        <form className='flex flex-col gap-4'>
+        <form className='flex flex-col gap-4' onSubmit={handleSubmit}>
             <input className=' hidden' type='file' accept='image/*' ref={filePickerRef} onChange={handleIamgeChange} />
             <div className=" relative w-32 h-32 self-center cursor-pointer shadow-md overflow-hidden rounded-full">
                 
@@ -88,15 +131,25 @@ export default function DashProfile() {
             {IamgeFileUploadError && 
                 <Alert color='failure'>{IamgeFileUploadError}</Alert>
             }
-            <TextInput type='text' id='username' placeholder='username' defaultValue={currentUser.username} />
-            <TextInput type='text' id='email' placeholder='email' defaultValue={currentUser.email} />
-            <TextInput type='password' id='password' placeholder='password'  />
+            <TextInput type='text' id='username' placeholder='username' defaultValue={currentUser.username} onChange={handleCHange}/>
+            <TextInput type='text' id='email' placeholder='email' defaultValue={currentUser.email} onChange={handleCHange} />
+            <TextInput type='password' id='password' placeholder='password' onChange={handleCHange}  />
             <Button type='submit' gradientDuoTone='purpleToBlue' outline>Update</Button>
         </form>
         <div className=" text-red-500 flex justify-between mt-5">
             <span className='cursor-pointer' >Delete Account</span>
             <span className='cursor-pointer'>Sign Out</span>
         </div>
+        {updataUserSuccess && 
+        <Alert color='success'  className='mt-5'>
+            {
+                updataUserSuccess
+            }
+        </Alert>}
+        {uploadError && 
+        <Alert color='failure' className='mt-5'>
+        {uploadError}    
+        </Alert>}
     </div>
   )
 }
