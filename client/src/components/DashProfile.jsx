@@ -1,4 +1,5 @@
 import {useSelector} from 'react-redux'
+import {Link} from 'react-router-dom'
 import {Alert, Button, Modal, ModalBody, ModalHeader, TextInput} from 'flowbite-react'
 import { useState ,useRef, useEffect} from 'react';
 import {getStorage, ref, uploadBytesResumable,getDownloadURL} from 'firebase/storage'
@@ -12,7 +13,7 @@ import { updateStart,updateSuccess,updateFailure
 import {useDispatch}from 'react-redux'
 export default function DashProfile() {
     const [FormData,setFormData]=useState({});
-    const {currentUser,error:uploadError}=useSelector(state => state.user);
+    const {currentUser,error:uploadError,loading}=useSelector(state => state.user);
     const [imageFile,setIamgeFile]=useState(null);
     const [imageFileUrl,setIamgeFileUrl]=useState(null);
     const [IamgeFileUploadProgress,setIamgeFileUploadProgress]=useState(null);
@@ -169,7 +170,16 @@ export default function DashProfile() {
             <TextInput type='text' id='username' placeholder='username' defaultValue={currentUser.username} onChange={handleCHange}/>
             <TextInput type='text' id='email' placeholder='email' defaultValue={currentUser.email} onChange={handleCHange} />
             <TextInput type='password' id='password' placeholder='password' onChange={handleCHange}  />
-            <Button type='submit' gradientDuoTone='purpleToBlue' outline>Update</Button>
+            <Button type='submit' gradientDuoTone='purpleToBlue' outline disabled={loading || IamgeFileUploading}>
+            {loading || IamgeFileUploading ?'...Loading':'Update'}
+            </Button>
+            {currentUser && currentUser.isAdmin && 
+           <Link to='/create-post'>
+                 <Button type='button' gradientDuoTone='purpleToPink' className='w-full'>
+                Create a Post
+            </Button>
+           </Link>}
+        
         </form>
         <div className=" text-red-500 flex justify-between mt-5">
             <span className='cursor-pointer' onClick={()=>setshowModel(true)} >Delete Account</span>
