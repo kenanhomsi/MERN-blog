@@ -1,5 +1,7 @@
 import {Alert, Button, FileInput, Select, TextInput} from 'flowbite-react'
 import ReactQuill from 'react-quill';
+import { useNavigate } from 'react-router-dom'
+
 import { useState } from 'react';
 import 'react-quill/dist/quill.snow.css';
 import { app } from '../firebase';
@@ -11,7 +13,9 @@ export default function CreatePost() {
   const [imageFile,setimageFile]=useState(null);
   const [ImageUploadProgress,setImageUploadProgress]=useState(null);
   const[IamgeFileUploadError,setIamgeFileUploadError]=useState(null);
-
+  const[PuplishError,setPuplishError]=useState(null);
+    
+      const navigate=useNavigate();
   const handleIamgeChange=(e)=>{
     const file=e.target.files[0];
    
@@ -27,7 +31,6 @@ export default function CreatePost() {
            return;
         }
     setIamgeFileUploadError(null);
-    console.log('yess');
     const storage=getStorage(app);
     const fileName=new Date().getTime()+ imageFile.name;
     const storageRef=ref(storage,fileName);
@@ -56,16 +59,38 @@ export default function CreatePost() {
       setImageUploadProgress(null);
     }
   }
+  const handleSubmit= async (e)=>{
+    e.preventDefault();
+    try{
+      const response=await fetch('/api/post/create/',{
+        method:'POST',
+        headers:{'Content-Type':'application/json'},
+        body:JSON.stringify(FormData)
+      })
+      const data=await response.json();
+      if(!response.ok){
+        setPuplishError(data.message)
+        return ;
+      }
+      setPuplishError(null);
+      navigate(`/post/${data.slug}`);
+
+      console.log(data);
+    }catch(err){
+     return setPuplishError(err.message)
+    }
 
 
-
+  }
+console.log(PuplishError);
+ 
   return (
     <div className='p-3  max-w-3xl mx-auto min-h-screen'>
             <h1 className='text-center text-3xl my-7 font-semibold'>Create a post</h1>
-            <form className=" flex flex-col gap-4">
+            <form className=" flex flex-col gap-4" onSubmit={handleSubmit}>
                 <div className="flex flex-col gap-4 sm:flex-row justify-between">
-                    <TextInput type='text'  placeholder='Title' required id='title' className='flex1' />
-                    <Select>
+                    <TextInput type='text'  placeholder='Title' required id='title' onChange={(e)=>setFormData({...FormData,title:e.target.value})} className='flex1' />
+                    <Select onChange={(e)=>setFormData({...FormData,catrgory:e.target.value})}>
                         <option value="uncategorized">Select a category</option>
                         <option value="javascript">JavaScript</option>
                         <option value="reactjs">React.js</option>
@@ -83,8 +108,10 @@ export default function CreatePost() {
                 </div>
                 {IamgeFileUploadError && <Alert color='failure'>{IamgeFileUploadError}</Alert>}
                 {FormData.image && <img src={FormData.image} alt='uploadimage' className='w-full h-72  object-cover' />}
-                <ReactQuill theme="snow" placeholder='Write Something...' className=' h-72 mb-12' required  />
+                <ReactQuill theme="snow" placeholder='Write Something...'
+                 className=' h-72 mb-12' required  onChange={(value)=>setFormData({...FormData,content:value})} />
                 <Button type='submit' gradientDuoTone='purpleToPink'>Puplish</Button>
+                {PuplishError && <Alert className='mt-5' color='failure'>{PuplishError}</Alert>}
             </form>
     </div>
   )
