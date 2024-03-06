@@ -9,6 +9,7 @@ export default {
     extend: {},
   },
   plugins: [
+    require('tailwind-scrollbar'),
     require('flowbite/plugin'),
   ],
 };
