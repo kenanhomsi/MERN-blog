@@ -70,14 +70,13 @@ export const getUsers=async(req,res,next)=>{
     return next(errorHandler(403,'you are not allowed to see this users'));
   }
   try{
-    const startIndex=parseInt(req.params.startIndex) || 0;
-    const limit=req.params.limit || 9;
-    const sortDirection= req.params.order ==='asc'? 1 : -1;
+    const startIndex=parseInt(req.query.startIndex) || 0;
+    const limit=req.query.limit || 9;
+    const sortDirection= req.query.order ==='asc'? 1 : -1;
     const users=await User.find()
     .sort({createdAt : sortDirection})
     .skip(startIndex)
     .limit(limit);
-
     const usersWithoutPass=users.map((user)=>{
       const {password ,...rest}=user._doc;
       return rest;
