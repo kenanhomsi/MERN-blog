@@ -8,3 +8,48 @@ body{
 .ql-editor{
     font-size: 1.3rem;
 }
+.post-content p{
+    margin-bottom: 0.5rem;
+
+}
+.post-content h1{
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin: 1.5rem 0;
+    font-family: sans-serif;
+}
+.post-content h2{
+    font-size: 1.4rem;
+    /* font-weight: 500; */
+    margin: 1.4rem 0;
+    font-family: sans-serif;
+}
+.post-content a{
+    color: blue;
+    cursor: pointer;
+
+}
+.dark .post-content a{
+    color: red;
+}
+.post-content a:hover{
+    text-decoration: underline;
+}
+
+.post-content pre{
+    color: white;
+    background-color: #1E293B;
+    border: 0;
+    padding: 10px;
+    border-radius: 10px;
+}
+.dark .post-content pre{
+    /* color: #1E293B; */
+    background-color: #252d38;
+}
+.dark code{
+    background-color: #80808059 !important;
+    padding: 5px;
+    border: 0;
+    border-radius: 6px;
+}
