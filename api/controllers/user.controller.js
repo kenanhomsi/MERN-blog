@@ -47,7 +47,7 @@ export const updateUser= async(req,res,next)=>{
 
 }
 export const deleteUser= async(req,res,next)=>{
-  if(req.user.id !=req.params.userId){
+  if(req.user.id != req.params.userId){
     return next(errorHandler(403,'your are not allowed to update this user'));
   }
   try{
@@ -64,4 +64,42 @@ export const signout = (req,res,next)=>{
     next(err);
   }
 
+}
+export const getUsers=async(req,res,next)=>{
+  if(!req.user.isAdmin){
+    return next(errorHandler(403,'you are not allowed to see this users'));
+  }
+  try{
+    const startIndex=parseInt(req.params.startIndex) || 0;
+    const limit=req.params.limit || 9;
+    const sortDirection= req.params.order ==='asc'? 1 : -1;
+    const users=await User.find()
+    .sort({createdAt : sortDirection})
+    .skip(startIndex)
+    .limit(limit);
+
+    const usersWithoutPass=users.map((user)=>{
+      const {password ,...rest}=user._doc;
+      return rest;
+    })
+    const totalusers=await User.countDocuments();
+    const now=new Date();
+
+    const oneMouthago=new Date(
+      now.getFullYear(),
+      now.getMonth() -1,
+      now.getDate()
+    )
+      const lastMouthUsers=await User.countDocuments({
+        createdAt:{$gte:oneMouthago},
+      })
+      res.status(200).json({
+        users:usersWithoutPass,
+        totalusers,
+        lastMouthUsers
+      });
+  }catch(err){
+      next(err);
+
+  }
 }
