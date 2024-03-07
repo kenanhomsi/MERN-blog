@@ -73,6 +73,20 @@ export default function DashUsers() {
 //       console.log(error.message);
 //     }
 //   };
+const handleDeleteUser=async()=>{
+  try{
+      const res=await fetch(`/api/user/delete/${UserIdToDelete}`,{method:'DELETE'});
+      const data= await res.json();
+      if(res.ok){
+        setUsers((pre)=>pre.filter((user)=> user._id !== UserIdToDelete))
+        setShowModel(false);
+      }else{
+        console.log(data.message);
+      }
+  }catch(err){
+    console.log(err);
+  }
+}
   return (
     <div className=' table-auto overflow-x-scroll md:mx-auto p-3 scrollbar  scrollbar-track-slate-100 dark:scrollbar-track-slate-700 scrollbar-thumb-slate-100 dark:scrollbar-thumb-slate-500'> 
       { currentUser.isAdmin   && users.length > 0 ? (
@@ -130,7 +144,7 @@ export default function DashUsers() {
                     <HiOutlineExclamationCircle className='h-14 w-14 text-gray-400 dark:text-gray-200 mb-4 mx-auto'/>
                     <h3 className='mb-5 text-lg text-gray-500 dark:text-gray-400'>Are you sure you want do delete this User ?</h3>
                     <div className=" flex justify-center gap-4">
-                        <Button color='failure' >yes ,I'am sure</Button>
+                        <Button color='failure' onClick={handleDeleteUser} >yes ,I'am sure</Button>
                         <Button color='gray' onClick={()=>setShowModel(false)}>No ,Cancel</Button>
                     </div>
                 </div>
