@@ -102,3 +102,16 @@ export const getUsers=async(req,res,next)=>{
 
   }
 }
+export const getSingleUser=async(req,res,next)=>{
+  const {userId}=req.params;
+  try{
+      const singleUser=await User.findById(userId);
+      if(!singleUser){
+        return next(errorHandler(404,'user not found'))
+      }
+      const {password,email ,...rest}=singleUser._doc;
+      res.status(200).json(rest);
+  }catch(err){
+    next(err);
+  }
+}
