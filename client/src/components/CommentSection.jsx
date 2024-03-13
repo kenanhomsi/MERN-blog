@@ -73,6 +73,11 @@ export default function CommentSection({postId}) {
             console.log(err);
         }
   }
+const handelSaveEdite=async(comment,editedcontent)=>{
+   setComments(comments.map((c)=>
+   c._id ===comment._id ? {...c,content:editedcontent}:c
+   ));
+}
   return (
     <div className='max-w-2xl mx-auto w-full p-3'>
         {currentUser ?(
@@ -117,7 +122,7 @@ export default function CommentSection({postId}) {
                     </div>
                 </div>
                 {comments.map((comment)=>(
-                    <Comment key={comment._id} comment={comment} onlike={handleLike} />
+                    <Comment key={comment._id} comment={comment} onSave={handelSaveEdite} onlike={handleLike} />
                 ))}
                 </>
             )
