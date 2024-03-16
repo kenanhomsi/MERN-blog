@@ -43,7 +43,6 @@ export default function PostPage() {
                     if(res.ok){
                         setRecentPosts(data.posts)
                     }
-                    console.log(data.posts);
             }
             fetchRecentPosts();
             }catch(err){
