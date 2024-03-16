@@ -1,5 +1,5 @@
 import { Sidebar, SidebarItem, SidebarItemGroup, SidebarItems } from 'flowbite-react';
-import { HiUser ,HiArrowSmRight ,HiDocumentText,HiOutlineUserGroup ,HiAnnotation } from 'react-icons/hi'
+import { HiUser ,HiArrowSmRight ,HiDocumentText,HiOutlineUserGroup,HiChartPie ,HiAnnotation } from 'react-icons/hi'
 import {Link, useLocation} from 'react-router-dom'
 import {useEffect, useState } from 'react'
 import {useDispatch,useSelector} from 'react-redux'
@@ -34,6 +34,13 @@ export default function DashSidebar() {
     <Sidebar className=' w-full md:w-56'>
         <SidebarItems>
             <SidebarItemGroup className=' flex flex-col gap-1'>
+              {currentUser.isAdmin&&
+              <Link to='/dashboard?tab=dash' >
+                <SidebarItem as='div' active={Tab==='posts' || !Tab} icon={HiChartPie}  labelColor='dark' >
+                    Dashboard
+                </SidebarItem>
+              </Link>
+              }
             <Link to='/dashboard?tab=profile' >
                         <SidebarItem as='div' active={Tab==='profile'} icon={HiUser} label={currentUser.isAdmin?'Admin':'User'} labelColor='dark' >
                             Profile
@@ -41,18 +48,19 @@ export default function DashSidebar() {
                 </Link>
               {currentUser.isAdmin&& 
                 <>
+                
                 <Link to='/dashboard?tab=posts' >
-                        <SidebarItem as='div' active={Tab==='posts'} icon={HiDocumentText} label={currentUser.isAdmin?'Admin':'User'} labelColor='dark' >
+                        <SidebarItem as='div' active={Tab==='posts'} icon={HiDocumentText}  labelColor='dark' >
                             posts
                         </SidebarItem>
                 </Link>
                 <Link to='/dashboard?tab=comments' >
-                <SidebarItem as='div' active={Tab==='comments'} icon={HiAnnotation} label={currentUser.isAdmin?'Admin':'User'} labelColor='dark' >
+                <SidebarItem as='div' active={Tab==='comments'} icon={HiAnnotation}  labelColor='dark' >
                     Comments
                 </SidebarItem>
                 </Link>
                 <Link to='/dashboard?tab=users' >
-                <SidebarItem as='div' active={Tab==='users'} icon={HiOutlineUserGroup} label={currentUser.isAdmin?'Admin':'User'} labelColor='dark' >
+                <SidebarItem as='div' active={Tab==='users'} icon={HiOutlineUserGroup}  labelColor='dark' >
                     Users
                 </SidebarItem>
                 </Link>

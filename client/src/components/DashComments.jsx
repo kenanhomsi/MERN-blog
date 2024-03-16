@@ -11,7 +11,7 @@ export default function DashComments() {
   const[commentIdToDelete,setcommentIdToDelete]=useState(null);
 
   useEffect(()=>{
-    const fetchUsers=async()=>{
+    const fetchComments=async()=>{
       try{
         const res=await fetch(`/api/comment/getComments/`)
         const data =await res.json();
@@ -27,7 +27,7 @@ export default function DashComments() {
       
    }
    if(currentUser.isAdmin){
-    fetchUsers();
+    fetchComments();
   }
 
   },[currentUser._id]);
