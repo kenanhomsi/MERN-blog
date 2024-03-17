@@ -75,14 +75,12 @@ export default function CreatePost() {
       setPuplishError(null);
       navigate(`/post/${data.slug}`);
 
-      console.log(data);
     }catch(err){
      return setPuplishError(err.message)
     }
 
 
   }
-console.log(PuplishError);
  
   return (
     <div className='p-3  max-w-3xl mx-auto min-h-screen'>
@@ -90,7 +88,7 @@ console.log(PuplishError);
             <form className=" flex flex-col gap-4" onSubmit={handleSubmit}>
                 <div className="flex flex-col gap-4 sm:flex-row justify-between">
                     <TextInput type='text'  placeholder='Title' required id='title' onChange={(e)=>setFormData({...FormData,title:e.target.value})} className='flex1' />
-                    <Select onChange={(e)=>setFormData({...FormData,catrgory:e.target.value})}>
+                    <Select onChange={(e)=>setFormData({...FormData,category:e.target.value})}>
                         <option value="uncategorized">Select a category</option>
                         <option value="javascript">JavaScript</option>
                         <option value="reactjs">React.js</option>

@@ -13,7 +13,7 @@ export default function DashboardComp() {
     const [lastMountUsers,setlastMountUsers]=useState(0);
     const [lastMountposts,setlastMountposts]=useState(0);
     const [lastMountComments,setlastMountComments]=useState(0);
-    const {currentUser}=useSelector((state)=>state.user);
+    const {currentUser}=useSelector(( state )=> state.user);
     useEffect(()=>{
         const fetchUsers=async()=>{
             try{
@@ -21,6 +21,8 @@ export default function DashboardComp() {
                 const data =await res.json();
                 if(res.ok){
                     setUsers(data.users);
+                    
+
                     settotalUsers(data.totalusers);
                     setlastMountUsers(data.lastMouthUsers);
                 }
@@ -57,13 +59,14 @@ export default function DashboardComp() {
                 console.log(err)
               }
         };
-        if(currentUser.isAdmin){
+        if( currentUser.isAdmin ){
             fetchUsers();
             fetchPosts();
             fetchComments();
         }
     },[currentUser])
-    console.log(users)
+
+    // console.log(users)
     // console.log(comments)
     // console.log(posts)
     // console.log(totalusers)

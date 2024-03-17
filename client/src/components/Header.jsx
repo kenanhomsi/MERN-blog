@@ -1,12 +1,16 @@
 import {Avatar, Button, Dropdown, DropdownDivider, DropdownHeader, DropdownItem, Navbar, TextInput} from 'flowbite-react'
-import { Link , useLocation} from 'react-router-dom'
+import { Link , useLocation ,useNavigate} from 'react-router-dom'
 import { AiOutlineSearch } from 'react-icons/ai'
 import {FaMoon ,FaSun} from 'react-icons/fa'
 import {useSelector ,useDispatch} from 'react-redux'
 import {toggleTheme} from "../../redux/theme/themeSlice"
 import { signOutSuccess } from '../../redux/user/userSlice'
+import { useState,useEffect } from 'react'
 export default function Header() {
+    const [searchTerm,setsearchTerm]=useState('');
     const path=useLocation().pathname;
+    const location=useLocation();
+    const navigate=useNavigate();
     const dispatch=useDispatch();
     const {currentUser}= useSelector(state => state.user);
     const {theme}= useSelector(state => state.theme);
@@ -23,7 +27,21 @@ export default function Header() {
         }catch(err){
             console.log(err.message)
         }
-  
+    }
+
+    useEffect(()=>{
+        const urlParams =new URLSearchParams(location.search);
+        const searchTermFromUrl=urlParams.get('searchTerm')
+        if(searchTermFromUrl){
+            setsearchTerm(searchTermFromUrl);
+        }
+    },[location.search])
+    const handleSubmit=(e)=>{
+        e.preventDefault();
+        const urlParams=new URLSearchParams(location.search);
+        urlParams.set('searchTerm',searchTerm);
+        const searchquery=urlParams.toString();
+        navigate(`/search/?${searchquery}`);
     }
   return (
     <Navbar className='border-b-2' >
@@ -33,8 +51,10 @@ export default function Header() {
             Blog
         </Link>
         
-        <form >
-            <TextInput type='text' placeholder='Search' rightIcon={AiOutlineSearch} className=' hidden lg:inline' />
+        <form onSubmit={handleSubmit} className='flex'>
+            <TextInput type='text' placeholder='Search'
+             value={searchTerm} onChange={(e)=>setsearchTerm(e.target.value)} rightIcon={AiOutlineSearch}  className=' hidden lg:inline' />
+             {/* <button type='submit' className=' z-20 ml-[-30px]'><AiOutlineSearch /></button> */}
         </form>
         <Button className=' w-12 h-12  lg:hidden' color='gray' pill>
             <AiOutlineSearch  />
